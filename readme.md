@@ -2,7 +2,6 @@
 ```markdown
 # Sistema de Mensageria com Microserviços
 
-![Arquitetura](https://i.imgur.com/JQ0yXWU.png)
 
 Sistema completo de autenticação e troca de mensagens com 3 APIs especializadas.
 
