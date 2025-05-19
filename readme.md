@@ -27,8 +27,8 @@ Sistema completo de autenticação e troca de mensagens com 3 APIs especializada
 
 1. Clone o repositório:
 ```bash
-git clone https://github.com/seu-usuario/sistema-mensagens.git
-cd sistema-mensagens
+git clone https://github.com/codeguima/apps_trabalho_final.git
+cd apps_trabalho_final
 ```
 
 2. Inicie os containers:
