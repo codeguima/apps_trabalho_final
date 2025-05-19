@@ -157,15 +157,4 @@ curl -X POST http://localhost:3000/api/messages \
 | `docker-compose logs` | Mostra logs dos containers    |
 | `docker-compose down` | Para e remove os containers   |
 
-## 📄 Licença
 
-MIT © [Seu Nome]
-```
-
-Este README inclui:
-- Todas as informações essenciais
-- Diagrama visual (substitua a URL da imagem)
-- Comandos prontos para executar
-- Tabelas organizadas
-- Fluxo de trabalho claro
-- Seções bem destacadas
