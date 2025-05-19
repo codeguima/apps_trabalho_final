@@ -1,0 +1,6 @@
+# Node.js
+node_modules/
+
+# Diretórios de build ou saída
+/dist
+/build
