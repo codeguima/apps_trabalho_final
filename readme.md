@@ -5,6 +5,8 @@
 ## Arquitetura
 
 
+![arquitetura](https://github.com/user-attachments/assets/576e4758-2594-4c3c-b0ee-a9448f6e4ae6)
+
 
 Sistema completo de autenticação e troca de mensagens com 3 APIs especializadas.
 
