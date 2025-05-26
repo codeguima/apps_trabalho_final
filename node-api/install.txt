@@ -1,1 +1,0 @@
-npm install express body-parser jsonwebtoken sequelize mysql2 amqplib

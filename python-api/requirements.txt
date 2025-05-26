@@ -1,3 +1,4 @@
 flask
+pika
 mysql-connector-python
-dotenv
+sqlalchemy

@@ -1,41 +1,105 @@
-services:
-  dbmysql:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: flaskdb
-    ports:
-      - "3307:3306"
-    networks:
-      - app-networks
+version: '3.8'
 
-  flask_api:
-    build: ./python-api
-    container_name: flask_api
-    ports:
-      - "5000:5000"
-    volumes:
-      - "./python-api:/app"
-    command: "python app.py"
-    depends_on:
-      - dbmysql
-    networks:
-      - app-networks
-    
-  node_api:
-    build: ./node-api
-    container_name: node_api
+services:
+  node-api:
+    build:
+      context: ./node-api
     ports:
       - "3000:3000"
-    volumes:
-      - "./node-api:/app"
-      - "./node-api/node_modules:/app/node_modules"
-    command: "node app.js"
     depends_on:
-      - dbmysql
+      - db
+      - rabbitmq
+    environment:
+      DB_USERNAME: positivo
+      DB_PASSWORD: root
+      DB_NAME: sistemademensagem
+      DB_HOST: db
+      DB_DIALECT: mysql
+      TZ: America/Sao_Paulo
+      RABBITMQ_HOST: rabbitmq
+    volumes:
+      - ./node-api:/app
+      - /app/node_modules
+    working_dir: /app
+    command: ["npm", "start"]
     networks:
       - app-networks
 
+  python-api:
+    build:
+      context: ./python-api
+    ports:
+      - "5000:5000"  
+    depends_on:
+      - db
+      - rabbitmq
+    environment:
+      DB_USER: positivo
+      DB_PASSWORD: root
+      DB_NAME: sistemademensagem
+      DB_HOST: db
+      RABBITMQ_HOST: rabbitmq
+      TZ: America/Sao_Paulo
+    volumes:
+      - ./python-api:/app
+    working_dir: /app
+    command: ["python", "consumer.py"]  # ajuste conforme seu entrypoint
+    
+    networks:
+      - app-networks
+
+  php-api:
+    build:
+      context: ./php-api
+    depends_on:
+      - db
+      - rabbitmq
+    environment:
+      DB_USER: positivo
+      DB_PASSWORD: root
+      DB_NAME: sistemademensagem
+      DB_HOST: db
+      RABBITMQ_HOST: rabbitmq
+      JWT_SECRET: sua_chave_secreta_aqui
+      TZ: America/Sao_Paulo
+    volumes:
+      - ./php-api:/var/www/html
+    working_dir: /var/www/html
+    command: ["php", "-S", "0.0.0.0:8000", "-t", "."]  # ajuste conforme necessário
+    ports:
+      - "8000:8000"
+    networks:
+      - app-networks
+
+  db:
+    image: mysql:8.4
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sistemademensagem
+      MYSQL_USER: positivo
+      MYSQL_PASSWORD: root
+      TZ: America/Sao_Paulo
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-networks
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"     # porta para conexões AMQP
+      - "15672:15672"   # porta para painel de gerenciamento web
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - app-networks
+
+volumes:
+  db_data:
 
 networks:
   app-networks:

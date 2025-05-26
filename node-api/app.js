@@ -1,25 +1,36 @@
+//app.js
+
 const express = require('express');
-const bodyParser = require('body-parser');
-const sequelize = require('./config/database');
-const apiRoutes = require('./routes/api');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+
+const { applyMigrations } = require('./config/database');
+const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
-// Middlewares
-app.use(bodyParser.json());
 
-// Rotas
-app.use('/api', apiRoutes);
+app.use(express.json());
 
-// Sincronizar banco de dados e iniciar servidor
-sequelize.sync()
-  .then(() => {
-    app.listen(3000, () => {
-      console.log('Server running on port 3000');
-    });
-  })
-  .catch(err => {
-    console.error('Database sync error:', err);
-  });
+
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+
+
+
+// Middleware de tratamento de erros
+app.use(errorHandler);
+
+// Sincronização com o banco de dados
+applyMigrations();
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Servidor rodando na porta ${port}`);
+});
 
 module.exports = app;

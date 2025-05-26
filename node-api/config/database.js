@@ -1,20 +1,25 @@
-const { Sequelize } = require('sequelize');
-const config = require('./config');
+// config/database.js
 
-const sequelize = new Sequelize(
-  config.mysql.database,
-  config.mysql.user,
-  config.mysql.password,
-  {
-    host: config.mysql.host,
-    dialect: 'mysql',
-    pool: {
-      max: 10,
-      min: 0,
-      acquire: 30000,
-      idle: 10000
+const db = require('../models');
+
+async function applyMigrations(retries = 10, delay = 5000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      await db.sequelize.authenticate();
+      console.log('✅ Conectado ao banco de dados!');
+      await db.sequelize.sync();
+      console.log('✅ Sincronização com o banco de dados realizada.');
+      return;
+    } catch (error) {
+      console.error(`⏳ Tentativa ${i + 1} falhou:`, error.message);
+      await new Promise((res) => setTimeout(res, delay));
     }
   }
-);
 
-module.exports = sequelize;
+  console.error('❌ Não foi possível conectar ao banco de dados após múltiplas tentativas.');
+  process.exit(1);
+}
+
+module.exports = {
+  applyMigrations,
+};

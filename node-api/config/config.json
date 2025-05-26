@@ -1,0 +1,10 @@
+{
+  "development": {
+    "username": "positivo",
+    "password": "root",
+    "database": "sistemademensagem",
+    "host": "db",
+    "dialect": "mysql",
+    "timezone": "-03:00"
+  }
+}

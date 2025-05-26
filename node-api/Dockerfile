@@ -1,16 +1,12 @@
-FROM node:22-alpine
+FROM node:22
 
 WORKDIR /app
 
+COPY package*.json ./
+RUN npm install
 
-COPY ./  /app
-
-RUN npm install express
-RUN npm install axios
+COPY . .
 
 EXPOSE 3000
 
-CMD ["node", "app.js"]
-
-
-
+CMD ["npm", "start"]
