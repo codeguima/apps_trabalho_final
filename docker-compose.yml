@@ -93,8 +93,8 @@ services:
       - "5672:5672"     # porta para conexões AMQP
       - "15672:15672"   # porta para painel de gerenciamento web
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
     networks:
       - app-networks
 
