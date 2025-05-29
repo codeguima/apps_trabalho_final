@@ -5,7 +5,7 @@ const router = express.Router();
 const db = require('../models'); // Importa o modelo de usuário
 
 const AuthenticateToken = require('../services/authenticateToken');
-const secretKey = 'SUA_CHAVE_SECRETA'; // Chave secreta do token JWT
+const secretKey = 'secreto123'; // Chave secreta do token JWT
 const authenticateToken = new AuthenticateToken(secretKey);
 
 const UserController = require('../controllers/userController');

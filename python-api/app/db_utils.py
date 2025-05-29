@@ -3,6 +3,12 @@ import time
 from sqlalchemy import exc
 
 def wait_for_db(app, max_retries=5, retry_delay=5):
+
+    # Espera inicial para garantir que o MySQL esteja inicializando
+    print("⏳ Aguardando 10 segundos antes de tentar conectar ao MySQL...")
+    time.sleep(15)
+
+
     with app.app_context():
         for attempt in range(max_retries):
             try:

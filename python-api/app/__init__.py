@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask # type: ignore
 from .extensions import db, cache
 from .routes import bp
 from .db_utils import create_tables

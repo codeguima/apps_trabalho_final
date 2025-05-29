@@ -80,8 +80,6 @@ services:
       RABBITMQ_HOST: rabbitmq
       JWT_SECRET: sua_chave_secreta_aqui
       TZ: America/Sao_Paulo
-    volumes:
-      - ./php-api:/var/www/html
     working_dir: /var/www/html
     command: ["php", "-S", "0.0.0.0:8000", "-t", "."]
     ports:
@@ -118,8 +116,8 @@ services:
       - "5672:5672"
       - "15672:15672"
     environment:
-      RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: admin
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
     networks:
       - app-networks
 

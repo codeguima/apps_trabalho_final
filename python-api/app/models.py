@@ -13,5 +13,5 @@ class Message(db.Model):
             'id': self.id,
             'message': self.message,
             'user_id_send': self.user_id_send,
-            'user_id_received': self.user_id_received
+            'user_id_received': self.user_id_received,
         }
