@@ -1,4 +1,6 @@
-flask
-pika
+flask==2.0.3
+werkzeug==2.0.3
+flask-sqlalchemy==2.5.1
 mysql-connector-python
-sqlalchemy
+flask-redis==0.4.0
+python-dotenv==0.19.0

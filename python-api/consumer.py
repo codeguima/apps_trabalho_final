@@ -1,12 +1,10 @@
 import pika
 import json
-from db import SessionLocal, engine
-from models import Message, Base
+from db import SessionLocal, engine, Base
+from app.models import Message
 
-# Cria tabelas se não existirem
 Base.metadata.create_all(bind=engine)
 
-# Conexão com o RabbitMQ
 connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq'))
 channel = connection.channel()
 channel.queue_declare(queue='messages')
@@ -24,7 +22,7 @@ def callback(ch, method, properties, body):
         session.commit()
         print(f"Mensagem salva: {data}")
     except Exception as e:
-        print("Erro ao salvar mensagem:", e)
+        print(f"Erro ao salvar mensagem: {e}")
         session.rollback()
     finally:
         session.close()
@@ -33,5 +31,3 @@ channel.basic_consume(queue='messages', on_message_callback=callback, auto_ack=T
 
 print('🎧 Aguardando mensagens...')
 channel.start_consuming()
-# Fechando a conexão com o RabbitMQ ao finalizar
-connection.close()

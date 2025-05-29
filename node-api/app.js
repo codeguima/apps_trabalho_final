@@ -29,6 +29,11 @@ app.use(errorHandler);
 applyMigrations();
 
 const port = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+    axios.get("http://node-api:3000/").then( e => res.send("From node api" + e.data ) )
+});
+
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
 });

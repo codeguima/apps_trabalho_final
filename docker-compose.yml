@@ -25,11 +25,30 @@ services:
     networks:
       - app-networks
 
-  python-api:
+  flask-api:
     build:
       context: ./python-api
     ports:
-      - "5000:5000"  
+      - "5000:5000"
+    depends_on:
+      - db
+      - rabbitmq
+      - redis
+    environment:
+      DATABASE_URL: mysql+mysqlconnector://positivo:root@db/sistemademensagem
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: sua-chave-secreta-aqui
+      TZ: America/Sao_Paulo
+    volumes:
+      - ./python-api:/app
+    working_dir: /app
+    command: ["flask", "run", "--host=0.0.0.0"]
+    networks:
+      - app-networks
+
+  python-consumer:
+    build:
+      context: ./python-api
     depends_on:
       - db
       - rabbitmq
@@ -43,8 +62,7 @@ services:
     volumes:
       - ./python-api:/app
     working_dir: /app
-    command: ["python", "consumer.py"]  # ajuste conforme seu entrypoint
-    
+    command: ["python", "consumer.py"]
     networks:
       - app-networks
 
@@ -65,7 +83,7 @@ services:
     volumes:
       - ./php-api:/var/www/html
     working_dir: /var/www/html
-    command: ["php", "-S", "0.0.0.0:8000", "-t", "."]  # ajuste conforme necessário
+    command: ["php", "-S", "0.0.0.0:8000", "-t", "."]
     ports:
       - "8000:8000"
     networks:
@@ -87,11 +105,18 @@ services:
     networks:
       - app-networks
 
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    networks:
+      - app-networks
+
   rabbitmq:
     image: rabbitmq:3-management
     ports:
-      - "5672:5672"     # porta para conexões AMQP
-      - "15672:15672"   # porta para painel de gerenciamento web
+      - "5672:5672"
+      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: admin
