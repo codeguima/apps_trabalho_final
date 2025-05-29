@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"name\":\"teste\", \"lastname\":\"teste\", \"email\":\"usuario1@email.com\", \"password\":\"321\"\r\n}\r\n",
+					"raw": "{\r\n  \"name\":\"pedro\", \"lastname\":\"guimaraes\", \"email\":\"usuario2@email.com\", \"password\":\"321\"\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -46,7 +46,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ4MjM2MjExLCJleHAiOjE3NDgyMzk4MTF9.nIBNuPJC_bfZNh8he0E1yzgpcIjaut7TOd7K_0nK65I",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ4NDg5NDgxLCJleHAiOjE3NDg0OTMwODF9.uzniZNj_mNb3jeLAY9DT6UAvTDS2NxlyVC6utpjWssE",
 							"type": "string"
 						}
 					]
@@ -114,7 +114,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzQ4MjQwNTY2LCJleHAiOjE3NDgyNDQxNjZ9.bQa4-O8nbs0_8wUzv9WXYgEppwHWubdue8ntrizXXoY",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQ4NDkyNDQ0LCJleHAiOjE3NDg0OTYwNDR9.pDfqptl-bL6Z6yWUOYghFHtzWkKbAjhwug5iYZlMFss",
 							"type": "string"
 						}
 					]

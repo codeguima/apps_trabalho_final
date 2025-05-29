@@ -17,9 +17,8 @@ function respondError($code, $message) {
 // Obter e validar o header Authorization
 $headers = getallheaders();
 $authHeader = $headers['Authorization'] ?? '';
-
-if (!$authHeader || !str_starts_with($authHeader, 'Bearer ')) {
-    respondError(401, 'Token não fornecido ou formato inválido');
+if (empty($authHeader) || !preg_match('/^Bearer\s(\S+)$/', $authHeader)) {
+    respondError(401, 'Token de autenticação ausente ou inválido');
 }
 
 $token = trim(str_replace('Bearer ', '', $authHeader));
