@@ -4,3 +4,7 @@ node_modules/
 # Diretórios de build ou saída
 /dist
 /build
+
+/generated/prisma
+
+.env

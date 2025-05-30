@@ -1,112 +1,26 @@
-version: '3.8'
-
 services:
-  node-api:
-    build:
-      context: ./node-api
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
-      - rabbitmq
-    environment:
-      DB_USERNAME: positivo
-      DB_PASSWORD: root
-      DB_NAME: sistemademensagem
-      DB_HOST: db
-      DB_DIALECT: mysql
-      TZ: America/Sao_Paulo
-      RABBITMQ_HOST: rabbitmq
-    volumes:
-      - ./node-api:/app
-      - /app/node_modules
-    working_dir: /app
-    command: ["npm", "start"]
-    networks:
-      - app-networks
-
-  flask-api:
-    build:
-      context: ./python-api
-    ports:
-      - "5000:5000"
-    depends_on:
-      - db
-      - rabbitmq
-      - redis
-    environment:
-      DATABASE_URL: mysql+mysqlconnector://positivo:root@db/sistemademensagem
-      REDIS_URL: redis://redis:6379/0
-      SECRET_KEY: sua-chave-secreta-aqui
-      TZ: America/Sao_Paulo
-    volumes:
-      - ./python-api:/app
-    working_dir: /app
-    command: ["flask", "run", "--host=0.0.0.0"]
-    networks:
-      - app-networks
-
-  python-consumer:
-    build:
-      context: ./python-api
-    depends_on:
-      - db
-      - rabbitmq
-    environment:
-      DB_USER: positivo
-      DB_PASSWORD: root
-      DB_NAME: sistemademensagem
-      DB_HOST: db
-      RABBITMQ_HOST: rabbitmq
-      TZ: America/Sao_Paulo
-    volumes:
-      - ./python-api:/app
-    working_dir: /app
-    command: ["python", "consumer.py"]
-    networks:
-      - app-networks
-
-  php-api:
-    build:
-      context: ./php-api
-    depends_on:
-      - db
-      - rabbitmq
-    environment:
-      DB_USER: positivo
-      DB_PASSWORD: root
-      DB_NAME: sistemademensagem
-      DB_HOST: db
-      RABBITMQ_HOST: rabbitmq
-      JWT_SECRET: sua_chave_secreta_aqui
-      TZ: America/Sao_Paulo
-    working_dir: /var/www/html
-    command: ["php", "-S", "0.0.0.0:8000", "-t", "."]
-    ports:
-      - "8000:8000"
-    networks:
-      - app-networks
-
   db:
-    image: mysql:8.4
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: sistemademensagem
-      MYSQL_USER: positivo
-      MYSQL_PASSWORD: root
-      TZ: America/Sao_Paulo
+    container_name: apps_trabalho_final-db
+    image: bitnami/mysql:latest
     ports:
       - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=university
+      - MYSQL_DATABASE=sistemademensagem
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/bitnami/mysql/data
     networks:
       - app-networks
 
   redis:
-    image: redis:7
+    container_name: apps_trabalho_final-cache
+    image: bitnami/redis:latest
     ports:
       - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=university
+    volumes:
+      - redis_data:/bitnami/redis/data
     networks:
       - app-networks
 
@@ -121,8 +35,83 @@ services:
     networks:
       - app-networks
 
+  node-api:
+    container_name: apps_trabalho_final-node
+    build:
+      context: ./node-api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+    networks:
+      - app-networks
+
+  # flask-api:
+  #   build:
+  #     context: ./python-api
+  #   ports:
+  #     - "5000:5000"
+  #   depends_on:
+  #     - db
+  #     - rabbitmq
+  #     - redis
+  #   environment:
+  #     DATABASE_URL: mysql+mysqlconnector://positivo:root@db/sistemademensagem
+  #     REDIS_URL: redis://redis:6379/0
+  #     SECRET_KEY: sua-chave-secreta-aqui
+  #     TZ: America/Sao_Paulo
+  #   volumes:
+  #     - ./python-api:/app
+  #   working_dir: /app
+  #   command: ["flask", "run", "--host=0.0.0.0"]
+  #   networks:
+  #     - app-networks
+
+  # python-consumer:
+  #   build:
+  #     context: ./python-api
+  #   depends_on:
+  #     - db
+  #     - rabbitmq
+  #   environment:
+  #     DB_USER: positivo
+  #     DB_PASSWORD: root
+  #     DB_NAME: sistemademensagem
+  #     DB_HOST: db
+  #     RABBITMQ_HOST: rabbitmq
+  #     TZ: America/Sao_Paulo
+  #   volumes:
+  #     - ./python-api:/app
+  #   working_dir: /app
+  #   command: ["python", "consumer.py"]
+  #   networks:
+  #     - app-networks
+
+  # php-api:
+  #   build:
+  #     context: ./php-api
+  #   depends_on:
+  #     - db
+  #     - rabbitmq
+  #   environment:
+  #     DB_USER: positivo
+  #     DB_PASSWORD: root
+  #     DB_NAME: sistemademensagem
+  #     DB_HOST: db
+  #     RABBITMQ_HOST: rabbitmq
+  #     JWT_SECRET: sua_chave_secreta_aqui
+  #     TZ: America/Sao_Paulo
+  #   working_dir: /var/www/html
+  #   command: ["php", "-S", "0.0.0.0:8000", "-t", "."]
+  #   ports:
+  #     - "8000:8000"
+  #   networks:
+  #     - app-networks
+
 volumes:
   db_data:
+  redis_data:
 
 networks:
   app-networks:
