@@ -1,3 +1,5 @@
 
 # Diretórios de build ou saída
 __pycache__
+
+.env

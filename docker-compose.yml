@@ -25,13 +25,17 @@ services:
       - app-networks
 
   rabbitmq:
-    image: rabbitmq:3-management
+    container_name: apps_trabalho_final-rabbitmq
+    image: bitnami/rabbitmq:latest
     ports:
       - "5672:5672"
       - "15672:15672"
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS=true
+    volumes:
+      - rabbitmq_data:/bitnami/rabbitmq/mnesia
     networks:
       - app-networks
 
@@ -47,46 +51,17 @@ services:
     networks:
       - app-networks
 
-  # flask-api:
-  #   build:
-  #     context: ./python-api
-  #   ports:
-  #     - "5000:5000"
-  #   depends_on:
-  #     - db
-  #     - rabbitmq
-  #     - redis
-  #   environment:
-  #     DATABASE_URL: mysql+mysqlconnector://positivo:root@db/sistemademensagem
-  #     REDIS_URL: redis://redis:6379/0
-  #     SECRET_KEY: sua-chave-secreta-aqui
-  #     TZ: America/Sao_Paulo
-  #   volumes:
-  #     - ./python-api:/app
-  #   working_dir: /app
-  #   command: ["flask", "run", "--host=0.0.0.0"]
-  #   networks:
-  #     - app-networks
-
-  # python-consumer:
-  #   build:
-  #     context: ./python-api
-  #   depends_on:
-  #     - db
-  #     - rabbitmq
-  #   environment:
-  #     DB_USER: positivo
-  #     DB_PASSWORD: root
-  #     DB_NAME: sistemademensagem
-  #     DB_HOST: db
-  #     RABBITMQ_HOST: rabbitmq
-  #     TZ: America/Sao_Paulo
-  #   volumes:
-  #     - ./python-api:/app
-  #   working_dir: /app
-  #   command: ["python", "consumer.py"]
-  #   networks:
-  #     - app-networks
+  python-api:
+    container_name: apps_trabalho_final-python
+    build:
+      context: ./python-api
+    ports:
+      - "5000:5000"
+    depends_on:
+      - node-api
+      - redis
+    networks:
+      - app-networks
 
   # php-api:
   #   build:
@@ -112,6 +87,7 @@ services:
 volumes:
   db_data:
   redis_data:
+  rabbitmq_data:
 
 networks:
   app-networks:

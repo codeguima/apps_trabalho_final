@@ -1,9 +1,6 @@
-pika
-flask
-werkzeug
-flask-sqlalchemy
-mysql-connector-python
-flask-redis
+fastapi
+uvicorn
 python-dotenv
-flask-caching
+aio-pika
 redis
+python-jose[cryptography]

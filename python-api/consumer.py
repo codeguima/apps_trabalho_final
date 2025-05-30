@@ -1,33 +1,42 @@
-import pika
-import json
-from db import SessionLocal, engine, Base
-from app.models import Message
+import asyncio
+import os
+import ast
+from dotenv import load_dotenv
+import aio_pika
+import redis.asyncio as redis
 
-Base.metadata.create_all(bind=engine)
+load_dotenv()
 
-connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq'))
-channel = connection.channel()
-channel.queue_declare(queue='messages')
+REDIS_HOST = os.getenv("REDIS_HOST")
+REDIS_PORT = os.getenv("REDIS_PORT")
+REDIS_PASSWORD = os.getenv("REDIS_PASSWORD")
+RABBITMQ_URL = os.getenv("RABBITMQ_URL")
+QUEUE_NAME = os.getenv("QUEUE_NAME")
 
-def callback(ch, method, properties, body):
-    data = json.loads(body)
-    session = SessionLocal()
-    try:
-        msg = Message(
-            message=data['message'],
-            user_id_send=data['user_id_send'],
-            user_id_received=data['user_id_received']
-        )
-        session.add(msg)
-        session.commit()
-        print(f"Mensagem salva: {data}")
-    except Exception as e:
-        print(f"Erro ao salvar mensagem: {e}")
-        session.rollback()
-    finally:
-        session.close()
+async def consume():
+  while True:
+    print("Consumindo mensagens...")
+    
+    redisConnection = redis.Redis(
+      host=REDIS_HOST,
+      port=int(REDIS_PORT),
+      password=REDIS_PASSWORD,
+      decode_responses=True
+    )
+    connection = await aio_pika.connect_robust(RABBITMQ_URL)
+    channel = await connection.channel()
+    queue = await channel.declare_queue(QUEUE_NAME, durable=True)
 
-channel.basic_consume(queue='messages', on_message_callback=callback, auto_ack=True)
-
-print('🎧 Aguardando mensagens...')
-channel.start_consuming()
+    async with queue.iterator() as queue_iter:
+      async for message in queue_iter:
+        async with message.process():
+          try:
+            data = ast.literal_eval(message.body.decode())
+            from_id = data["from_user_id"]
+            to_id = data["to_user_id"]
+            msg = data["message"]
+            key = f"messages:from:{from_id}:to:{to_id}"
+            await redisConnection.lpush(key, msg)
+            print(f"Mensagem salva em Redis key={key}")
+          except Exception as e:
+            print("Erro ao processar mensagem:", e)
