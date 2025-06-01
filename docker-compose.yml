@@ -63,26 +63,24 @@ services:
     networks:
       - app-networks
 
-  # php-api:
-  #   build:
-  #     context: ./php-api
-  #   depends_on:
-  #     - db
-  #     - rabbitmq
-  #   environment:
-  #     DB_USER: positivo
-  #     DB_PASSWORD: root
-  #     DB_NAME: sistemademensagem
-  #     DB_HOST: db
-  #     RABBITMQ_HOST: rabbitmq
-  #     JWT_SECRET: sua_chave_secreta_aqui
-  #     TZ: America/Sao_Paulo
-  #   working_dir: /var/www/html
-  #   command: ["php", "-S", "0.0.0.0:8000", "-t", "."]
-  #   ports:
-  #     - "8000:8000"
-  #   networks:
-  #     - app-networks
+  php-api:
+    container_name: apps_trabalho_final-php
+    build:
+      context: ./php-api
+    depends_on:
+      - redis
+    environment:
+      JWT_SECRET: sua_chave_secreta_aqui
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: university
+      TZ: America/Sao_Paulo
+    working_dir: /var/www/html
+    command: ["php", "-S", "0.0.0.0:8000", "-t", "."]
+    ports:
+      - "8000:8000"
+    networks:
+      - app-networks
 
 volumes:
   db_data:

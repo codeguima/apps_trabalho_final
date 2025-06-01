@@ -1,0 +1,26 @@
+# PHP
+vendor/
+*.log
+*.lock
+
+# Docker
+*.pid
+*.sock
+.env
+docker-compose.override.yml
+
+# Redis, MySQL, RabbitMQ volumes (se montados localmente)
+redis_data/
+db_data/
+rabbitmq_data/
+
+# IDEs
+.vscode/
+.idea/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Node.js (caso tenha frontend)
+node_modules/
