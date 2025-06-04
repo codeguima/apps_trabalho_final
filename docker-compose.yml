@@ -73,19 +73,14 @@ services:
     container_name: apps_trabalho_final-php
     build:
       context: ./php-api
+    ports:
+      - "7000:8000"
     depends_on:
+      - node-api
+      - python-api
       - redis
     env_file:
-    - ./php-api/.env
-    environment:
-      JWT_SECRET: dsadjaskdhasdkjhsakjdhsae7qw89e7123ejksdajasudio
-      REDIS_HOST: apps_trabalho_final-redis
-      REDIS_PORT: 6379
-      REDIS_PASSWORD: university
-    working_dir: /var/www/html
-    command: ["php", "-S", "0.0.0.0:8000", "-t", "."]
-    ports:
-      - "8000:8000"
+      - ./php-api/.env
     networks:
       - app-networks
 
