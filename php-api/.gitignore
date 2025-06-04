@@ -1,0 +1,16 @@
+*.pid
+*.sock
+.env/
+docker-compose.override.yml
+
+redis_data/
+db_data/
+rabbitmq_data/
+
+
+.vscode/
+.idea/
+
+.DS_Store
+Thumbs.db
+

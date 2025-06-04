@@ -1,6 +1,7 @@
 services:
   db:
-    container_name: apps_trabalho_final-db
+    container_name: apps_trabalho_final-mysql
+    restart: always
     image: bitnami/mysql:latest
     ports:
       - "3306:3306"
@@ -13,7 +14,7 @@ services:
       - app-networks
 
   redis:
-    container_name: apps_trabalho_final-cache
+    container_name: apps_trabalho_final-redis
     image: bitnami/redis:latest
     ports:
       - "6379:6379"
@@ -48,6 +49,8 @@ services:
     depends_on:
       - db
       - redis
+    env_file:
+    - ./node-api/.env
     networks:
       - app-networks
 
@@ -60,29 +63,31 @@ services:
     depends_on:
       - node-api
       - redis
+    env_file:
+      - ./python-api/.env
     networks:
       - app-networks
+ 
 
-  # php-api:
-  #   build:
-  #     context: ./php-api
-  #   depends_on:
-  #     - db
-  #     - rabbitmq
-  #   environment:
-  #     DB_USER: positivo
-  #     DB_PASSWORD: root
-  #     DB_NAME: sistemademensagem
-  #     DB_HOST: db
-  #     RABBITMQ_HOST: rabbitmq
-  #     JWT_SECRET: sua_chave_secreta_aqui
-  #     TZ: America/Sao_Paulo
-  #   working_dir: /var/www/html
-  #   command: ["php", "-S", "0.0.0.0:8000", "-t", "."]
-  #   ports:
-  #     - "8000:8000"
-  #   networks:
-  #     - app-networks
+  php-api:
+    container_name: apps_trabalho_final-php
+    build:
+      context: ./php-api
+    depends_on:
+      - redis
+    env_file:
+    - ./php-api/.env
+    environment:
+      JWT_SECRET: dsadjaskdhasdkjhsakjdhsae7qw89e7123ejksdajasudio
+      REDIS_HOST: apps_trabalho_final-redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: university
+    working_dir: /var/www/html
+    command: ["php", "-S", "0.0.0.0:8000", "-t", "."]
+    ports:
+      - "8000:8000"
+    networks:
+      - app-networks
 
 volumes:
   db_data:
