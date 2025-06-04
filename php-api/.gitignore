@@ -1,6 +1,6 @@
 *.pid
 *.sock
-.env
+.env/
 docker-compose.override.yml
 
 redis_data/
