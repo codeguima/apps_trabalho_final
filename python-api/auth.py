@@ -1,6 +1,6 @@
 # funções para lidar com autenticação JWT
 
-from fastapi import HTTPException
+from fastapi import HTTPException # type: ignore
 from redis_client import redis_client
 from utils.jwt_utils import decode_jwt
 

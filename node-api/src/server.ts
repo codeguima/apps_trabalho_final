@@ -15,8 +15,8 @@ app.get('/', (req, res) => {
 
 async function startServer() {
   try {
-    // Espera 5 segundos (5000ms) antes de tentar conectar (ajuste o tempo se quiser)
-    await new Promise(resolve => setTimeout(resolve, 5000))
+    // Espera 20 segundos (20000ms) antes de tentar conectar (ajuste o tempo se quiser)
+    await new Promise(resolve => setTimeout(resolve, 20000))
 
     // Conecta com o banco usando prisma
     await prisma.$connect()

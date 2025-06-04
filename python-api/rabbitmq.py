@@ -1,7 +1,7 @@
 # funções para conexão e publicar mensagens
 
 import aio_pika
-from app.config import RABBITMQ_URL, QUEUE_NAME
+from config import RABBITMQ_URL, QUEUE_NAME
 
 async def get_rabbitmq_connection():
     return await aio_pika.connect_robust(RABBITMQ_URL)

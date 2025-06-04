@@ -1,4 +1,5 @@
 # função para consumir e salvar mensagens no Redis
+
 import asyncio
 import ast
 from config import QUEUE_NAME

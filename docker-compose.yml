@@ -1,5 +1,7 @@
 services:
   db:
+    container_name: apps_trabalho_final-mysql
+    restart: always
     image: bitnami/mysql:latest
     ports:
       - "3306:3306"

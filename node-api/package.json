@@ -10,7 +10,8 @@
     "seed": "npx prisma db seed"
   },
   "prisma": {
-    "seed": "ts-node -r tsconfig-paths/register prisma/seed.ts"
+    "seed": "ts-node -r tsconfig-paths/register prisma/seed.ts",
+    "schema": "./prisma/schema.prisma"
   },
   "dependencies": {
     "@prisma/client": "^6.8.2",

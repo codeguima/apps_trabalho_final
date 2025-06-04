@@ -1,8 +1,8 @@
 # Funções de tratamento de erros e decodificação de JWT
 
-from jose import jwt, JWTError, ExpiredSignatureError
+from jose import jwt, JWTError, ExpiredSignatureError # type: ignore
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv # type: ignore
 
 load_dotenv()
 
