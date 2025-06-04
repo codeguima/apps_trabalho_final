@@ -1,6 +1,6 @@
 *.pid
 *.sock
-.env/
+.env
 docker-compose.override.yml
 
 redis_data/
@@ -14,3 +14,4 @@ rabbitmq_data/
 .DS_Store
 Thumbs.db
 
+vendor/
