@@ -24,6 +24,12 @@ services:
       - redis_data:/bitnami/redis/data
     networks:
       - app-networks
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "REDIS_PASSWORD:university", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
   rabbitmq:
     container_name: apps_trabalho_final-rabbitmq
@@ -39,6 +45,11 @@ services:
       - rabbitmq_data:/bitnami/rabbitmq/mnesia
     networks:
       - app-networks
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "node_health_check"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   node-api:
     container_name: apps_trabalho_final-node
@@ -47,8 +58,10 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - db
-      - redis
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_started
     env_file:
     - ./node-api/.env
     networks:
@@ -61,14 +74,17 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      - node-api
-      - redis
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      node-api:
+        condition: service_started
     env_file:
       - ./python-api/.env
     networks:
       - app-networks
  
-
   php-api:
     container_name: apps_trabalho_final-php
     build:
@@ -76,9 +92,12 @@ services:
     ports:
       - "7000:8000"
     depends_on:
-      - node-api
-      - python-api
-      - redis
+      redis:
+        condition: service_healthy
+      node-api:
+        condition: service_started
+      python-api:
+        condition: service_started
     env_file:
       - ./php-api/.env
     networks:

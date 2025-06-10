@@ -4,13 +4,13 @@ import asyncio
 import ast
 from config import QUEUE_NAME
 from redis_client import redis_client
-import aio_pika # type: ignore
+from rabbitmq import get_rabbitmq_connection
 
 async def consume():
     for attempt in range(10):
         try:
             print(f"Tentando conectar ao RabbitMQ (tentativa {attempt+1})...")
-            connection = await aio_pika.connect_robust()
+            connection = await get_rabbitmq_connection()
             break
         except Exception as e:
             print(f"Erro ao conectar ao RabbitMQ: {e}")
