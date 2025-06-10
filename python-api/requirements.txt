@@ -4,3 +4,4 @@ python-dotenv
 aio-pika
 redis
 python-jose[cryptography]
+httpx

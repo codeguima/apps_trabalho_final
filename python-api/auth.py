@@ -1,21 +1,31 @@
-# funções para lidar com autenticação JWT
+import os
+from fastapi import HTTPException
+import httpx
 
-from fastapi import HTTPException # type: ignore
-from redis_client import redis_client
-from utils.jwt_utils import decode_jwt
+API_NODE_URL = os.getenv("API_NODE_URL")
 
 async def validate_token(token: str):
     if not token or not token.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Token inválido")
 
-    token_value = token.split(" ")[1]
-    token_key = f"user:token:{token_value}"
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                f"{API_NODE_URL}/me",
+                headers={"Authorization": token},
+                timeout=5.0,
+            )
 
-    if not await redis_client.exists(token_key):
-        raise HTTPException(status_code=401, detail="Token expirado ou inválido")
+        if response.status_code != 200:
+            raise HTTPException(status_code=401, detail="Token inválido ou expirado")
 
-    user_id = decode_jwt(token_value)
-    if not user_id:
-        raise HTTPException(status_code=401, detail="Token JWT inválido")
+        user_data = response.json()
+        user_id = user_data.get("id")
 
-    return int(user_id)
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Usuário inválido ou sem ID")
+
+        return int(user_id)
+
+    except httpx.RequestError as e:
+        raise HTTPException(status_code=500, detail=f"Erro de comunicação com servidor de autenticação: {e}")

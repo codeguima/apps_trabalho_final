@@ -1,6 +1,11 @@
 FROM php:8.4-cli
 
-RUN apt-get update && apt-get install -y unzip curl libzip-dev
+RUN apt-get update && apt-get install -y \
+  unzip \
+  curl \
+  libcurl4-openssl-dev \
+  libzip-dev \
+  && docker-php-ext-install sockets zip curl
 
 RUN docker-php-ext-install sockets zip
 
