@@ -2,7 +2,6 @@ import { Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { UserService } from '../services/user.service'
-import redis from '@/cache/redis'
 
 const userService = new UserService()
 
@@ -22,8 +21,6 @@ export class AuthController {
       process.env.JWT_SECRET as string,
       { expiresIn: '1d' },
     )
-
-    await redis.set(`user:token:${token}`, user.id, 'EX', 60 * 60) // expira em 1h
 
     return res.json({ token })
   }
